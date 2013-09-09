@@ -25,10 +25,6 @@ app.get('/us', function(req, res) {
 	res.render('us.ejs');
 });
 
-app.get('/roadmap', function(req, res) {
-	res.render('roadmap.ejs');
-});
-
 app.get('/blog', function(req, res) {
 	res.render('blog.ejs');
 });
