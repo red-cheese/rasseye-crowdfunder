@@ -79,9 +79,9 @@ p {
 .button {
   display: inline-block;
   padding: 12px 31px;
-  border: 1px solid #0fc;
+  border: 1px solid #09f;
   border-radius: 5px;
-  background-color: #0fc;
+  background-color: #09f;
   background-image: none;
   -webkit-transition: all 200ms ease;
   -o-transition: all 200ms ease;
@@ -103,8 +103,8 @@ p {
 .button.btn {
   margin-top: 17px;
   margin-bottom: 5px;
-  border: 1px solid #0fc;
-  background-color: #0fc;
+  border: 1px solid #09f;
+  background-color: #09f;
   -webkit-transition: all 200ms ease;
   -o-transition: all 200ms ease;
   transition: all 200ms ease;
@@ -176,11 +176,12 @@ p {
   text-decoration: none;
   text-transform: none;
 }
-.nav-link:hover {
+.nav-link:hover, .nav-link:active {
   background-color: #969696;
   -webkit-transition: all 200ms ease;
   -o-transition: all 200ms ease;
   transition: all 200ms ease;
+  border: 0;
 }
 .company-title {
   -webkit-transition: all 200ms ease;
@@ -268,6 +269,7 @@ p {
   -ms-transform: none;
   -o-transform: none;
   transform: none;
+  border: 0;
 }
 .snippet-text-section {
   margin-top: 7px;
