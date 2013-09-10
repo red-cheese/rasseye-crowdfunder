@@ -376,6 +376,20 @@ p {
   line-height: 24px;
   font-weight: 500;
 }
+.alert-info {
+  display: block;
+  width: 70%;
+  margin: 3px auto;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border: 1px solid rgba(0, 153, 255, 1);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0);
+  color: #09f;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500; 
+}
 .form {
   margin-top: 20px;
 }
