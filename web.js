@@ -4,7 +4,7 @@ var fs = require('fs');
 
 // Configuration
 
-var app = express();
+var app = express.createServer(express.logger());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 // Render html pages
