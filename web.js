@@ -3,8 +3,12 @@ var fs = require('fs');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 var habitat = require('habitat');
+var mongodb = require('mongodb');
 
 // Configuration
+
+var mongoserver = new mongodb.Server('localhost', mongodb.Connection.DEFAULT_PORT);
+var dbConn = new mongodb.Db("testdb", mongoserver, { strict: true, safe: true });
 
 var env = habitat.load();
 
@@ -68,7 +72,16 @@ app.get('/btc', function(req, res) {
 
 app.get('/logic', ensureAuthenticated, function(req, res) {
 	//res.render('logic.ejs');
-	res.send(req.user);
+
+	dbConn.open(function(err, db) {
+		var coll = db.collection('testData');
+		coll.find().toArray(function(err, items) {
+			db.close();
+			res.send(items);
+		    });
+	    });
+
+	//res.send(req.user);
 });
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
