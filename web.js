@@ -7,8 +7,8 @@ var mongodb = require('mongodb');
 
 // Configuration
 
-var mongoserver = new mongodb.Server('localhost', mongodb.Connection.DEFAULT_PORT);
-var dbConn = new mongodb.Db("testdb", mongoserver, { strict: true, safe: true });
+var MongoClient = require('mongodb').MongoClient, Server = require('mongodb').Server;
+var mongoClient = new MongoClient(new Server('localhost', 27017));
 
 var env = habitat.load();
 
@@ -73,15 +73,20 @@ app.get('/btc', function(req, res) {
 app.get('/logic', ensureAuthenticated, function(req, res) {
 	//res.render('logic.ejs');
 
-	dbConn.open(function(err, db) {
+	mongoClient.open(function(err, mongoClient) {
+		var db = mongoClient.db("testdb"); // The DB is set here
 		var coll = db.collection('testData');
 		coll.find().toArray(function(err, items) {
-			db.close();
 			res.send(items);
+			mongoClient.close();
 		    });
 	    });
 
 	//res.send(req.user);
+});
+
+app.get('/new', ensureAuthenticated, function(req, res) {
+    res.render('new.ejs');
 });
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
@@ -89,7 +94,8 @@ app.get('/auth/facebook', passport.authenticate('facebook'));
 app.get('/auth/facebook/callback',
 	passport.authenticate('facebook', { failureRedirect: '/not_auth' }),
 	function(req, res) {
-	    res.redirect('/logic');
+	    var redirect_to = req.session.redirect_to || '/';
+	    res.redirect(redirect_to);
 	});
 
 app.get('/logout', function(req, res) {
@@ -111,6 +117,7 @@ app.listen(port, function() {
 // Authentication
 
 function ensureAuthenticated(req, res, next) {
+    req.session.redirect_to = req.path;
     if (req.isAuthenticated()) { return next(); }
     res.redirect('/auth/facebook');
 }
