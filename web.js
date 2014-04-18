@@ -86,7 +86,7 @@ app.get('/logic', ensureAuthenticated, function(req, res) {
 });
 
 app.get('/new', ensureAuthenticated, function(req, res) {
-    res.render('new.ejs');
+    res.render('new.ejs', { locals: { apiKey : 'fake', apiSecret : 'fake' } });
 });
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
