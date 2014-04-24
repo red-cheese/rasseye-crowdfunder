@@ -14,18 +14,18 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
+          var socket = io.connect('http://localhost');
 
-          var lastfm = new LastFM({
-              apiKey    : <%-JSON.stringify(apiKey)%>,
-              apiSecret : <%-JSON.stringify(apiSecret)%>,
-              cache     : new LastFMCache()
+          $("#who").change(function() {
+              var name = $(this).val();
+              socket.emit('get artist info', { name: name });
           });
 
-          function provideArtistInfo(lastfm, name) {}
-          $("#who").change(function() {
-              provideArtistInfo(lastfm, $(this).val());
+          socket.on('artist info', function(data) {
+              alert(data);
           });
       });
     </script>

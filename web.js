@@ -46,7 +46,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 // Serve static files like images
 app.use(express.static(__dirname + '/public'));
-
+var io = require('socket.io').listen(app.listen(8080));
 
 // Routes
 
@@ -106,11 +106,18 @@ app.get('/not_auth', function(req, res) {
 	res.send("Authentication failed");
     });
 
-// Port
 
-var port = process.env.PORT || 8080;
-app.listen(port, function() {
-	console.log("Listening on " + port);
+io.sockets.on('connection', function (socket) {
+    socket.on('get artist info', function (data) {
+        console.log(data);
+	var name = data.name;
+
+	var lastfmId = "ala";
+	var realName = "alala";
+	var description = "des";
+	var picUrl = "picc";
+	socket.emit('artist info', { lastfmId: lastfmId, name: realName, description: description, picUrl: picUrl });
+    });
 });
 
 
