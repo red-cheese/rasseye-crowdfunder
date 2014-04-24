@@ -8,10 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
-    <script type="text/javascript" src="/js/lastfm.api.md5.js"></script>
-    <script type="text/javascript" src="/js/lastfm.api.js"></script>
-    <script type="text/javascript" src="/js/lastfm.api.cache.js"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -25,7 +21,10 @@
           });
 
           socket.on('artist info', function(data) {
-              alert(data);
+              $("#artistImg").attr("src", data.picUrl);
+              $("#artistName").html(data.name);
+              $("#artistDesc").html(data.description);
+              $("#artistId").attr("value", data.artistId);
           });
       });
     </script>
@@ -36,15 +35,25 @@
     <div class="container">
       <h1>Organize a show!</h1>
 
-      <form role="form" style="width: 75%; padding-top: 3%;">
+      <form role="form" style="width: 60%; padding-top: 3%;">
 	<div class="form-group">
 	  <label for="who">Who?</label>
-	  <input class="form-control" id="who" placeholder="My fav band">
+	  <input class="form-control" id="who" placeholder="My favorite band" required="required">
+	  <div class="row" style="padding-top: 2%;">
+	    <div class="col-md-5">
+	      <img id="artistImg" class="img" src=""></img>
+	    </div>
+	    <div class="col-md-7">
+	      <h4 id="artistName" style="text-align: center;"></h4>
+	      <div id="artistDesc" style="text-align: justify;"></div>
+	    </div>
+	  </div>
 	</div>
 	<div class="form-group">
 	  <label for="where">Where?</label>
-	  <input class="form-control" id="where" placeholder="My town">
+	  <input class="form-control" id="where" placeholder="My town" required="required">
 	</div>
+	<input type="hidden" id="artistId" name="artistId" value="">
 	<button type="submit" class="btn btn-default">Submit</button>
       </form>
     </div>

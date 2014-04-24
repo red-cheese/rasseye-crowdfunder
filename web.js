@@ -4,6 +4,8 @@ var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 var habitat = require('habitat');
 var mongodb = require('mongodb');
+var LastfmAPI = require('lastfmapi');
+
 
 // Configuration
 
@@ -47,6 +49,12 @@ app.use(passport.session());
 // Serve static files like images
 app.use(express.static(__dirname + '/public'));
 var io = require('socket.io').listen(app.listen(8080));
+
+var lfm = new LastfmAPI({
+    'api_key' : env.get('RASSEYE_LASTFM_API_KEY'),
+    'secret' : env.get('RASSEYE_LASTFM_API_SECRET')
+});
+
 
 // Routes
 
@@ -109,14 +117,24 @@ app.get('/not_auth', function(req, res) {
 
 io.sockets.on('connection', function (socket) {
     socket.on('get artist info', function (data) {
-        console.log(data);
-	var name = data.name;
-
-	var lastfmId = "ala";
-	var realName = "alala";
-	var description = "des";
-	var picUrl = "picc";
-	socket.emit('artist info', { lastfmId: lastfmId, name: realName, description: description, picUrl: picUrl });
+	lfm.artist.search({ 'artist': data.name },
+			  function (err, found) {
+			      if (found) {
+				  var artistList = found.artistmatches.artist;
+				  var artist = artistList[0];
+				  var artistImg = artist.image[3]["#text"]; // Medium size image
+				  if (artist.mbid) {
+				      lfm.artist.getInfo({ mbid: artist.mbid },
+							 function(err, info) {
+							     socket.emit('artist info', {
+								     artistId: artist.mbid,
+								     name: artist.name,
+								     description: info.bio.summary,
+								     picUrl: artistImg });
+							 });
+				  } // else { alert("Artist not found"); } // TODO handle alerts
+			      } // TODO alert here as well
+			  });
     });
 });
 
