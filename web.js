@@ -78,23 +78,41 @@ app.get('/btc', function(req, res) {
 	res.render('btc.ejs');
 });
 
-app.get('/logic', ensureAuthenticated, function(req, res) {
-	//res.render('logic.ejs');
-
-	mongoClient.open(function(err, mongoClient) {
-		var db = mongoClient.db("testdb"); // The DB is set here
-		var coll = db.collection('testData');
-		coll.find().toArray(function(err, items) {
-			res.send(items);
-			mongoClient.close();
-		    });
-	    });
-
-	//res.send(req.user);
+app.get('/logic', function(req, res) {
+    mongoClient.open(function(err, mongoClient) {
+	var db = mongoClient.db("rasseye");
+	var coll = db.collection("ConcertRequest");
+	coll.find().toArray(function(err, items) {
+	    mongoClient.close();
+	    res.render('logic.ejs', { locals: { data: JSON.stringify(items) } });
+	});
+    });
 });
 
 app.get('/new', ensureAuthenticated, function(req, res) {
-    res.render('new.ejs', { locals: { apiKey : 'fake', apiSecret : 'fake' } });
+    res.render('new.ejs');
+});
+
+app.post('/new', ensureAuthenticated, function(req, res) {
+    var mbid = req.body.artistId;
+    var where = req.body.where;
+    mongoClient.open(function(err, mongoClient) {
+	var db = mongoClient.db("rasseye");
+	var coll = db.collection("ConcertRequest");
+	var item = {
+	    author_id: req.user.id,
+	    artist_id: mbid,
+	    place: where,
+	    creation_time: Date.now(),
+	    is_approved: 0,
+	    is_done: 0,
+	    artist_name: req.body.artistRealName
+	};
+	coll.insert(item, function(err, inserted) {
+	    mongoClient.close();
+	    res.redirect('/logic');
+	});
+    });
 });
 
 app.get('/auth/facebook', passport.authenticate('facebook'));

@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- This site was created in Webflow. http://www.webflow.com--><!-- Last Published: Thu Sep 05 2013 20:25:06 GMT+0000 (UTC) -->
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -25,6 +24,7 @@
               $("#artistName").html(data.name);
               $("#artistDesc").html(data.description);
               $("#artistId").attr("value", data.artistId);
+              $("#artistRealName").attr("value", data.name);
           });
       });
     </script>
@@ -35,7 +35,7 @@
     <div class="container">
       <h1>Organize a show!</h1>
 
-      <form role="form" style="width: 60%; padding-top: 3%;">
+      <form role="form" style="width: 60%; padding-top: 3%;" enctype="application/x-www-form-urlencoded" action="/new" method="post">
 	<div class="form-group">
 	  <label for="who">Who?</label>
 	  <input class="form-control" id="who" placeholder="My favorite band" required="required">
@@ -51,9 +51,10 @@
 	</div>
 	<div class="form-group">
 	  <label for="where">Where?</label>
-	  <input class="form-control" id="where" placeholder="My town" required="required">
+	  <input class="form-control" id="where" name="where" placeholder="My town" required="required">
 	</div>
 	<input type="hidden" id="artistId" name="artistId" value="">
+	<input type="hidden" id="artistRealName" name="artistRealName" value="">
 	<button type="submit" class="btn btn-default">Submit</button>
       </form>
     </div>
