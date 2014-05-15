@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Vote | RASSEYE!</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+  </head>
+  <body>
+
+    <div class="container">
+      <h1>Vote for this show!</h1>
+
+      <% var showParsed = JSON.parse(show); %>
+
+      <p class="lead" style="padding-top: 3%;">
+	Who: <%= showParsed["artist_name"] %><br>
+	Where: <%= showParsed["place"] %><br>
+	<br>
+	Organizer ID: <%= showParsed["author_id"] %><br>
+	Timestamp: <%= showParsed["creation_time"] %><br>
+	<br>
+	Already voted: <%= votes %>
+      </p>
+
+      <% var action = "/show/" + showParsed["_id"]; %>
+      <form role="form" style="width: 60%; padding-top: 3%;" enctype="application/x-www-form-urlencoded" action="<%= action %>" method="post">
+	<div class="form-group">
+	<div class="form-group">
+	  <label for="price">How much will you pay?</label>
+	  <input class="form-control" id="price" name="price" placeholder="25$" required="required">
+	</div>
+	<button type="submit" class="btn btn-default">Submit</button>
+      </form>
+    </div>
+
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+  </body>
+  </html>

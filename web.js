@@ -89,6 +89,55 @@ app.get('/logic', function(req, res) {
     });
 });
 
+app.get('/show/:showid([0-9a-z]{24})', function(req, res) {
+    var showId = req.params.showid;
+    mongoClient.open(function(err, mongoClient) {
+	var db = mongoClient.db("rasseye");
+	var coll = db.collection("ConcertRequest");
+	coll.find({ _id: new mongodb.ObjectID(showId) }).toArray(function(err, items) {
+	    if (items.length != 1) {
+		mongoClient.close(); // This all needs an urgent fix: db should be a singleton
+		res.send("Show not found");
+	    } else {
+		votesColl = db.collection("Vote");
+		votesColl.find({ concert_id: items[0]["_id"] }).toArray(function(err, votes) {
+		    mongoClient.close();
+		    res.render('show.ejs', { locals: { show: JSON.stringify(items[0]), votes: votes.length } });
+		});
+	    }
+	});
+    });
+});
+
+app.post('/show/:showid([0-9a-z]{24})', ensureAuthenticated, function(req, res) {
+    var showId = req.params.showid;
+    mongoClient.open(function(err, mongoClient) {
+	var db = mongoClient.db("rasseye");
+	var coll = db.collection("ConcertRequest");
+	coll.find({ _id: new mongodb.ObjectID(showId) }).toArray(function(err, items) {
+	    if (items.length != 1) {
+		mongoClient.close(); // This all needs an urgent fix: db should be a singleton
+		res.send("Show not found");
+	    } else {
+		var user = req.user.id;
+		votesColl = db.collection("Vote");
+		votesColl.find({ concert_id: items[0]["_id"], user_id: user }).toArray(function(err, votes) {
+		    if (votes.length > 0) {
+			mongoClient.close();
+			res.send("You have already voted for this concert");
+		    } else {
+			var vote = { concert_id: items[0]["_id"], user_id: user, price: req.body.price };
+			votesColl.insert(vote, function(err, records) {
+			    mongoClient.close();
+			    res.send("Done");
+			})
+		    }
+		});
+	    }
+	});
+    });
+});
+
 app.get('/new', ensureAuthenticated, function(req, res) {
     res.render('new.ejs');
 });
