@@ -124,12 +124,12 @@ app.post('/show/:showid([0-9a-z]{24})', ensureAuthenticated, function(req, res) 
 		votesColl.find({ concert_id: items[0]["_id"], user_id: user }).toArray(function(err, votes) {
 		    if (votes.length > 0) {
 			mongoClient.close();
-			res.send("You have already voted for this concert");
+			res.render('oops.ejs', { locals: { message: "You have already voted for this show. You can't vote more than once!" } });
 		    } else {
 			var vote = { concert_id: items[0]["_id"], user_id: user, price: req.body.price };
 			votesColl.insert(vote, function(err, records) {
 			    mongoClient.close();
-			    res.send("Done");
+			    res.render('oops.ejs', { locals: { message: "You voted, thank you!" } });
 			})
 		    }
 		});
@@ -159,7 +159,7 @@ app.post('/new', ensureAuthenticated, function(req, res) {
 	};
 	coll.insert(item, function(err, inserted) {
 	    mongoClient.close();
-	    res.redirect('/logic');
+	    res.redirect('/show/' + inserted[0]._id);
 	});
     });
 });
