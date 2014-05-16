@@ -6,6 +6,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link href="/css/navbar.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
@@ -33,6 +34,21 @@
   <body>
 
     <div class="container">
+
+      <div class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">RASSEYE!</a>
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="/logic">All shows</a></li>
+              <li class="active"><a href="/new">New show</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <h1>Organize a show!</h1>
 
       <form role="form" style="width: 60%; padding-top: 3%;" enctype="application/x-www-form-urlencoded" action="/new" method="post">
