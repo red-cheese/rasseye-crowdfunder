@@ -16,6 +16,7 @@
           var socket = io.connect('http://localhost');
 
           $("#who").change(function() {
+              $("#artistRealName").attr("value", "");
               var name = $(this).val();
               socket.emit('get artist info', { name: name });
           });
@@ -26,6 +27,13 @@
               $("#artistDesc").html(data.description);
               $("#artistId").attr("value", data.artistId);
               $("#artistRealName").attr("value", data.name);
+          });
+
+          $("#new").submit(function() {
+              if ($("#artistRealName").attr("value") == "") {
+                  alert("Unknown artist!");
+                  return false;
+              }
           });
       });
     </script>
@@ -51,7 +59,7 @@
 
       <h1>Organize a show!</h1>
 
-      <form role="form" style="width: 60%; padding-top: 3%;" enctype="application/x-www-form-urlencoded" action="/new" method="post">
+      <form id="new" role="form" style="width: 60%; padding-top: 3%;" enctype="application/x-www-form-urlencoded" action="/new" method="post">
 	<div class="form-group">
 	  <label for="who">Who?</label>
 	  <input class="form-control" id="who" placeholder="My favorite band" required="required">
