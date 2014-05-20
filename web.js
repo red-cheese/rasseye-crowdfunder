@@ -197,7 +197,9 @@ app.get('/auth/facebook/callback',
 	});
 
 app.get('/logout', function(req, res) {
+	req.session.userId = undefined;
 	req.logout();
+	res.redirect('/');
     });
 
 app.get('/not_auth', function(req, res) {
