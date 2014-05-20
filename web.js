@@ -102,7 +102,28 @@ app.get('/show/:showid([0-9a-z]{24})', function(req, res) {
 		votesColl = db.collection("Vote");
 		votesColl.find({ concert_id: items[0]["_id"] }).toArray(function(err, votes) {
 		    mongoClient.close();
-		    res.render('show.ejs', { locals: { show: JSON.stringify(items[0]), votes: votes.length } });
+		    res.render('show.ejs', { locals: { show: JSON.stringify(items[0]), votes: votes.length, user: req.session.userId } });
+		});
+	    }
+	});
+    });
+});
+
+app.post('/set/:showid([0-9a-z]{24})', ensureAuthenticated, function(req, res) {
+    var showId = new mongodb.ObjectID(req.params.showid);
+    mongoClient.open(function(err, mongoClient) {
+	var db = mongoClient.db("rasseye");
+	var coll = db.collection("ConcertRequest");
+	coll.find({ _id: showId }).toArray(function(err, items) {
+	    if (items.length != 1) {
+		mongoClient.close(); // This all needs an urgent fix: db should be a singleton
+		res.send("Show not found");
+	    } else {
+		var user = req.user.id; // To fix: we should check the user here as well
+
+		coll.update({ _id: showId }, { $set: { is_approved: req.body.status, comment: req.body.comment } }, function(err, cnt) {
+		    mongoClient.close();
+		    res.redirect('/show/' + req.params.showid);
 		});
 	    }
 	});
@@ -148,12 +169,13 @@ app.post('/new', ensureAuthenticated, function(req, res) {
     mongoClient.open(function(err, mongoClient) {
 	var db = mongoClient.db("rasseye");
 	var coll = db.collection("ConcertRequest");
+	var now = new Date();
 	var item = {
 	    author_id: req.user.id,
 	    artist_id: mbid,
 	    place: where,
-	    creation_time: Date.now(),
-	    is_approved: 0,
+	    creation_time: now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear(),
+	    is_approved: "in progress",
 	    is_done: 0,
 	    artist_name: req.body.artistRealName
 	};
@@ -170,6 +192,7 @@ app.get('/auth/facebook/callback',
 	passport.authenticate('facebook', { failureRedirect: '/not_auth' }),
 	function(req, res) {
 	    var redirect_to = req.session.redirect_to || '/';
+	    req.session.userId = req.user.id; // Not sure about its correctness
 	    res.redirect(redirect_to);
 	});
 

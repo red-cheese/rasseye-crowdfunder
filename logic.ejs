@@ -31,10 +31,14 @@
       <h1>Shows:</h1>
       <div class="list-group" style="width: 75%">
 	<% var dataParsed = JSON.parse(data);
+	   if (dataParsed.length == 0) { %>
+	<p class="lead">No shows</p>
+	<% }
 	   for (var i = 0; i < dataParsed.length; i++) {
 	     var link = "/show/" + dataParsed[i]["_id"]; %>
 	   <a class="list-group-item" href="<%= link %>">
-	     <%= dataParsed[i]["artist_name"] %> in <%= dataParsed[i]["place"] %>
+	     <span class="badge"><%= dataParsed[i]["is_approved"] %></span>
+	     <b><%= dataParsed[i]["artist_name"] %></b> in <b><%= dataParsed[i]["place"] %></b>
 	   </a>
 	<% } %>
       </div>
